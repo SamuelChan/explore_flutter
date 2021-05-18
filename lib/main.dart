@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:english_words/english_words.dart';
 
 void main() {
   runApp(MyApp());
@@ -26,7 +27,8 @@ class MyApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      //home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: RandomWords(),
     );
   }
 }
@@ -47,6 +49,44 @@ class MyHomePage extends StatefulWidget {
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
+}
+
+class RandomWords extends StatefulWidget {
+  @override
+  RandomWordsState createState() => RandomWordsState();
+}
+
+class RandomWordsState extends State<RandomWords> {
+  final List<WordPair> _suggestions = <WordPair>[];
+  final TextStyle _biggerFont = const TextStyle(fontSize: 18);
+
+  Widget _buildRow(WordPair pair) {
+    return ListTile(
+      title: Text(
+        pair.asPascalCase,
+        style: _biggerFont,
+      ),
+    );
+  }
+
+  Widget _buildSuggestions() {
+    return ListView.builder(itemBuilder: (BuildContext _context, int i) {
+      if (i.isOdd) return Divider();
+      final int index = i ~/ 2;
+      if (index >= _suggestions.length) {
+        _suggestions.addAll(generateWordPairs().take(10));
+      }
+      return _buildRow(_suggestions[index]);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Words Generator')),
+      body: _buildSuggestions(),
+    );
+  }
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -97,7 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text("hello world"),
+            RandomWords(),
             Text(
               'You have pushed the button this many times:',
             ),
